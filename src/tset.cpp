@@ -8,9 +8,6 @@
 #include "tset.h"
 
 // Fake variables used as placeholders in tests
-static const int FAKE_INT = -1;
-static TBitField FAKE_BITFIELD(1);
-static TSet FAKE_SET(1);
 
 TSet::TSet(int mp) : BitField(mp)
 {
@@ -42,15 +39,12 @@ int TSet::GetMaxPower(void) const // получить макс. к-во эл-т�
 
 int TSet::IsMember(const int Elem) const // элемент множества?
 {
-    if (Elem > MaxPower)
-        return 0;
-    
-    return BitField.GetBit(Elem);
+	return BitField.GetBit(Elem);
 }
 
 void TSet::InsElem(const int Elem) // включение элемента множества
 {
-    BitField.SetBit(Elem);
+BitField.SetBit(Elem);
 }
 
 void TSet::DelElem(const int Elem) // исключение элемента множества
@@ -69,14 +63,12 @@ TSet& TSet::operator=(const TSet &s) // присваивание
 
 int TSet::operator==(const TSet &s) const // сравнение
 {
-    if (MaxPower != s.MaxPower)
-        return 0;
     return BitField == s.BitField;
 }
 
 int TSet::operator!=(const TSet &s) const // сравнение
 {
-    return !(*this == s);
+    return BitField != s.BitField;
 }
 
 TSet TSet::operator+(const TSet &s) // объединение
@@ -87,11 +79,7 @@ TSet TSet::operator+(const TSet &s) // объединение
 
 TSet TSet::operator+(const int Elem) // объединение с элементом
 {
-    int m = MaxPower;
-    if (m < Elem)
-        m = Elem;
-    TSet tmp(m);
-    tmp.BitField = tmp.BitField | BitField;
+    TSet tmp(BitField);
     tmp.BitField.SetBit(Elem);
     return tmp;
 }
@@ -117,12 +105,30 @@ TSet TSet::operator~(void) // дополнение
 
 // перегрузка ввода/вывода
 
-istream &operator>>(istream &istr, TSet &s) // ввод
-{
-    return istr;
+istream &operator>>(istream &istr, TSet &s) {
+    char ch;
+    int t;
+    do {
+        istr >> ch;
+    } while(ch != '{');
+
+    do {
+        istr >> t;
+        s.BitField.SetBit(t);
+        do {
+            istr >> ch;
+        } while(ch != ',' && ch != '}');
+    } while (ch != '}');
 }
 
 ostream& operator<<(ostream &ostr, const TSet &s) // вывод
 {
+    ostr << '{';
+
+    for (int i = 0; i < s.MaxPower; ++i) {
+        if (s.BitField.GetBit(i))
+            ostr << ", " << i;
+    }
+    ostr << '}';
     return ostr;
 }

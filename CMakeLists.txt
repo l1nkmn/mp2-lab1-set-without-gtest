@@ -1,24 +1,15 @@
-cmake_minimum_required(VERSION 4.4)
+cmake_minimum_required(VERSION 3.16)
+project(MyProject LANGUAGES CXX)
 
-project(LAB1)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(LAB1)
+# Все .cpp из src/
+file(GLOB SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
-target_sources(LAB1
-	PRIVATE
-	src/main.cpp)
+add_executable(myapp ${SOURCES})
 
-add_library(mylib)
-
-target_sources(mylib
-	PRIVATE
-		src/tbitfield.cpp
-		src/tset.cpp
-	PUBLIC
-	FILE_SET HEADERS
-	BASE_DIRS
-		include
-	FILES
-		include/tbitfield.h
-		include/tset.h)
-
+# Заголовки из include/
+target_include_directories(myapp PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
