@@ -119,16 +119,18 @@ istream &operator>>(istream &istr, TSet &s) {
             istr >> ch;
         } while(ch != ',' && ch != '}');
     } while (ch != '}');
+    return istr;
 }
 
 ostream& operator<<(ostream &ostr, const TSet &s) // вывод
 {
     ostr << '{';
-
-    for (int i = 0; i < s.MaxPower; ++i) {
+    int i;
+    for (i = 0; i < s.MaxPower - 1; ++i) {
         if (s.BitField.GetBit(i))
-            ostr << ", " << i;
+            ostr << ' ' << i << ',';
     }
+    ostr << ' ' << i++ << ' ';
     ostr << '}';
     return ostr;
 }

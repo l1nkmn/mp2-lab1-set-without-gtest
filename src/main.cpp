@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../include/tset.h"
+#include "tset.h"
 
 int main() {
     TSet s(5);
