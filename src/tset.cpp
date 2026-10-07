@@ -7,15 +7,13 @@
 
 #include "tset.h"
 
-// Fake variables used as placeholders in tests
-
 TSet::TSet(int mp) : BitField(mp)
 {
     MaxPower = mp;
 }
 
 // конструктор копирования
-TSet::TSet(const TSet &s) : BitField(s.MaxPower)
+TSet::TSet(const TSet &s) : BitField(s.BitField)
 {
     MaxPower = s.MaxPower;
 }
@@ -44,7 +42,7 @@ int TSet::IsMember(const int Elem) const // элемент множества?
 
 void TSet::InsElem(const int Elem) // включение элемента множества
 {
-BitField.SetBit(Elem);
+    BitField.SetBit(Elem);
 }
 
 void TSet::DelElem(const int Elem) // исключение элемента множества
@@ -73,7 +71,8 @@ int TSet::operator!=(const TSet &s) const // сравнение
 
 TSet TSet::operator+(const TSet &s) // объединение
 {
-    TSet tmp(BitField | s.BitField);
+    TBitField t = BitField | s.BitField;
+    TSet tmp(t);
     return tmp;
 }
 
@@ -114,6 +113,10 @@ istream &operator>>(istream &istr, TSet &s) {
 
     do {
         istr >> t;
+        
+        if (t == (int)'}')
+            return istr;
+        
         s.BitField.SetBit(t);
         do {
             istr >> ch;
@@ -126,11 +129,10 @@ ostream& operator<<(ostream &ostr, const TSet &s) // вывод
 {
     ostr << '{';
     int i;
-    for (i = 0; i < s.MaxPower - 1; ++i) {
+    for (i = 0; i < s.MaxPower; ++i) {
         if (s.BitField.GetBit(i))
             ostr << ' ' << i << ',';
     }
-    ostr << ' ' << i++ << ' ';
     ostr << '}';
     return ostr;
 }
